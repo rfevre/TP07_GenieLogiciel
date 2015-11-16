@@ -34,6 +34,9 @@ public class Paint extends Frame
     // la couleur du crayon
     private Color couleur = Color.BLACK ;
 
+    // dimension des traits
+    private int dimension = 1;
+
     /** Lancement de l'application : instanciation d'un objet Paint */
     public static void main(String [] a) 
     { 
@@ -80,17 +83,17 @@ public class Paint extends Frame
 	choixCouleurs.add(new BoutonCouleur(BLANC));
 	choixCouleurs.add(new BoutonCouleur(BLEU));
 
-	// creation comboBox choix taille du trait
-	/*String[] taille = new String[10];
-	for (int i=5;i<15;i++)
-	    taille[i]=""+i;
-	    JComboBox boxTailleTrait = new JComboBox(taille);*/
+	// creation du Choice
+	/* Choice epaisseurTrait = new Choice();
+	 epaisseurTrait.add("1");
+	 epaisseurTrait.add("2");
+	 epaisseurTrait.add("3");*/
 	
 	// creation panel bas
 	panelBas = new Panel();
 	panelBas.setLayout(new BorderLayout());
 	panelBas.add(choixCouleurs, BorderLayout.CENTER);
-	panelBas.add(boxTailleTrait, BorderLayout.WEST);
+	panelBas.add(new choiceEpaisseurTrait(), BorderLayout.WEST);
 	
 
 	// emboitement du panneau d'outils et de la zone de dessin dans le cadre principal
@@ -177,7 +180,7 @@ public class Paint extends Frame
 	// (ces methodes seront appelees par la methode paint)
 	private void paintPoint(Graphics gc) 
 	{
-	    gc.fillRect(x0-1, y0-1, 3, 3) ;
+	    gc.fillRect(x0-1, y0-1, 3*dimension, 3*dimension) ;
 	}
 
 	private void paintLine(Graphics gc) 
@@ -206,6 +209,12 @@ public class Paint extends Frame
 	{ 
 	    couleur = c ; 
 	}
+
+	/** Methode permettant de definir la dimension des traits */
+	public void setDimension(String d)
+	{
+	    dimension = Integer.parseInt(d) ;
+	}
 	
 	/** Redefinition de la methode update de Panel : on veut seulement appeler
 	 * paint sans effacer (on rappelle que par defaut, update efface tout 
@@ -220,6 +229,7 @@ public class Paint extends Frame
 	public void paint(Graphics gc) 
 	{
 	    gc.setColor(couleur) ;
+	    
 	    switch (outil) 
 		{
 		case POINT :
@@ -260,7 +270,7 @@ public class Paint extends Frame
 
     class BoutonCouleur extends Button 
     {
-	// l'outil gere par le bouton
+	// la couleur gere par le bouton
 	private int couleur_du_bouton = NOIR ;
 	
 	/** Le constructeur cree un bouton portant le nom adequat et ajoute a l'instance
@@ -277,6 +287,32 @@ public class Paint extends Frame
 		    public void actionPerformed(ActionEvent e) 
 		    {
 			dessin.setCouleur(COULEURS[couleur_du_bouton]) ;
+		    }
+		});    
+	}
+    } // fin de la classe interne BoutonCouleur
+
+    class choiceEpaisseurTrait extends Choice 
+    {
+	// l'outil gere par le bouton
+	//private int couleur_du_bouton = NOIR ;
+	
+	/** Le constructeur cree un bouton portant le nom adequat et ajoute a l'instance
+	 *  courante un auditeur pour reagir aux activations (clics) */
+	public choiceEpaisseurTrait() 
+	{
+	    add("1");
+	    add("2");
+	    add("3");
+	    add("4");
+	    add("5");
+	    // L'auditeur des actions du bouton : une classe anonyme implementant
+	    // l'interface ActionListener
+	    this.addItemListener(new ItemListener() 
+		{
+		    public void itemStateChanged(ItemEvent ie) 
+		    {
+			dessin.setDimension((String)ie.getItem()) ;
 		    }
 		});    
 	}
