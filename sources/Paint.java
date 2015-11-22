@@ -5,10 +5,10 @@ import java.awt.event.* ;  // gestion des evenements
 public class Paint extends Frame 
 {
     /** Definition des outils disponibles */
-    public static final int POINT=0, LINE=1, RECTANGLE=2 ;
+    public static final int POINT=0, LINE=1, RECTANGLE=2, EFFACER=3 ;
 
     /** Definition du nom des outils (ce qui apparait sur les boutons correspondants) */
-    public static final String [] OUTILS = {"Point", "Ligne", "Rectangle"} ;
+    public static final String [] OUTILS = {"Point", "Ligne", "Rectangle", "Effacer"} ;
 
     /** Definition des couleurs disponibles */
     public static final int VERT=0, ROUGE=1, JAUNE=2, NOIR=3, BLEU=4, BLANC=5 ;
@@ -72,6 +72,7 @@ public class Paint extends Frame
 	outils.add(new BoutonOutil(POINT)) ;
 	outils.add(new BoutonOutil(LINE)) ;
 	outils.add(new BoutonOutil(RECTANGLE)) ;
+	outils.add(new BoutonOutil(EFFACER));
 
 	// creation du panneau couleur du trait
 	choixCouleurs = new Panel();
@@ -148,7 +149,7 @@ public class Paint extends Frame
 		    }
 		    public void mouseReleased(MouseEvent e) 
 		    { // RELEASE : relachement apres appui
-			if (outil == RECTANGLE) 
+			if (outil == RECTANGLE ) 
 			    {
 				x = e.getX() ; 
 				y = e.getY() ;
@@ -185,23 +186,34 @@ public class Paint extends Frame
 
 	private void paintLine(Graphics gc) 
 	{
-	    gc.drawLine(x0, y0, x, y) ;
+	    for (int i=0;i<dimension;i++) {
+		gc.drawLine(x0-i, y0-i, x-i, y-i) ;
+	    }
 	    x0 = x ; 
 	    y0 = y ;
 	}
 
 	private void paintRectangle(Graphics gc) 
 	{
-	    gc.drawRect(Math.min(x0, x), Math.min(y0, y),
-			Math.abs(x-x0), Math.abs(y-y0)) ;
+	    for (int i=0;i<dimension;i++) {
+		gc.drawRect(Math.min(x0, x)-i, Math.min(y0, y)-i,
+			    Math.abs(x-x0), Math.abs(y-y0)) ;
+	    }
 	    x0 = x ; 
-	    y0 = y ; 
+	    y0 = y ;
+	}
+
+	private void effacer(Graphics gc) {
+	    // a faire
 	}
 	
 	/** Methode permettant de definir l'outil de dessin */
 	public void setOutil(int o) 
 	{ 
-	    outil = o ; 
+	    outil = o ;
+	    if (outil == EFFACER ) {
+		effacer();
+	    }
 	}
 
 	/** Methode permettant de definir la couleur du crayon */
@@ -306,6 +318,11 @@ public class Paint extends Frame
 	    add("3");
 	    add("4");
 	    add("5");
+	    add("6");
+	    add("7");
+	    add("8");
+	    add("9");
+	    add("10");
 	    // L'auditeur des actions du bouton : une classe anonyme implementant
 	    // l'interface ActionListener
 	    this.addItemListener(new ItemListener() 
